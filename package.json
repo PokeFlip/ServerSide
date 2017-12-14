@@ -1,0 +1,29 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "description": "pokeFlip back end",
+  "main": "server.js",
+  "dependencies": {
+    "body-parser": "^1.18.2",
+    "cors": "^2.8.4",
+    "dotenv": "^4.0.0",
+    "express": "^4.16.2",
+    "pg": "^7.4.0",
+    "superagent": "^3.8.2"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/PokeFlip/ServerSide.git"
+  },
+  "author": "Uranium",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/PokeFlip/ServerSide/issues"
+  },
+  "homepage": "https://github.com/PokeFlip/ServerSide#readme"
+}
