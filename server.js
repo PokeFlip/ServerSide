@@ -21,22 +21,29 @@ app.use(body.urlencoded({extended: true}));
 
 
 
-app.get('/game', (req, res) => {
+app.get('/game/:id', (req, res) => {
     const id = req.params.id;
+    console.log(id);
     superagent
         .get(`${pokeUrl}${id}/`)
         .end((err, resp) => {
-            const poke = resp.body
-                return {
-                    name: poke.name || 'n/a',
-                    dex_number: poke.id,
-                    img_url: poke.sprites.front_default || 'n/a',
-                    type: poke.types.type ? poke.types.type[0] || 'n/a'
-                }
-            });
-            loadPokemon(poke);
-            res.send('done');
+            const poke = resp.body;
+            console.log(poke.types.length);
+            const typeSlot = () => {
+                return (poke.types.length > 1) ? poke.types[1].type.name : poke.types[0].type.name;
+            };
+            const pokeObj = {
+                name: poke.name || 'n/a',
+                dex_number: poke.id,
+                img_url: poke.sprites.front_default || 'n/a',
+                type: poke.types ? typeSlot() : 'n/a'
+            };
+            loadPokemon(pokeObj);
+            console.log(pokeObj);
         });
+
+    res.send('done');
+});
 
 app.listen(PORT, () => (console.log(`listening for api requests to ${PORT}`)));
 
