@@ -32,13 +32,11 @@ app.get('/game', (req, res) => {
                     dex_number: poke.id,
                     img_url: poke.sprites.front_default || 'n/a',
                     type: poke.types.type ? poke.types.type[0] || 'n/a'
-                };
+                }
             });
-            res.send(poke);
-        }
-
-});
-
+            loadPokemon(poke);
+            res.send('done');
+        });
 
 app.listen(PORT, () => (console.log(`listening for api requests to ${PORT}`)));
 
@@ -47,17 +45,13 @@ app.listen(PORT, () => (console.log(`listening for api requests to ${PORT}`)));
 //////// ** DATABASE LOADERS ** ////////
 ////////////////////////////////////////
 
-function loadPokemon() {
-    fs.readFile('books.json', (err, fd) => {
-        JSON.parse(fd.toString()).forEach(ele => {
-            client.query(
-                'INSERT INTO books(title, author, isbn, "image_url", description) VALUES($1, $2, $3, $4, $5) ON CONFLICT DO NOTHING',
-                [ele.title, ele.author, ele.isbn, ele.image_url, ele.description]
-            )
-                .catch(console.error);
-        });
-    });
-}
+function loadPokemon(poke) {
+    client.query(
+        'INSERT INTO pokemon(name, dex_number, img_url, type) VALUES($1, $2, $3, $4)',
+        [poke.name, poke.dex_number, poke.img_url, poke.type]
+    )
+        .catch(console.error);
+};
 
 function loadLeaderboard() {
     client.query(`CREATE TABLE IF NOT EXISTS leaderboard (id serial PRIMARY KEY, name VARCHAR(50), score INTEGER);`
