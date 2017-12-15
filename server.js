@@ -18,17 +18,15 @@ app.use(cors());
 app.use(body.json());
 app.use(body.urlencoded({extended: true}));
 
-
-
+loadLeaderboard();
+loadPokemon();
 
 app.get('/game/:id', (req, res) => {
     const id = req.params.id;
-    console.log(id);
     superagent
         .get(`${pokeUrl}${id}/`)
-        .end((err, resp) => {
+        .then((resp) => {
             const poke = resp.body;
-            console.log(poke.types.length);
             const typeSlot = () => {
                 return (poke.types.length > 1) ? poke.types[1].type.name : poke.types[0].type.name;
             };
@@ -38,8 +36,7 @@ app.get('/game/:id', (req, res) => {
                 img_url: poke.sprites.front_default || 'n/a',
                 type: poke.types ? typeSlot() : 'n/a'
             };
-            loadPokemon(pokeObj);
-            console.log(pokeObj);
+            insertPokemon(pokeObj);
         });
 
     res.send('done');
@@ -48,17 +45,16 @@ app.get('/game/:id', (req, res) => {
 app.listen(PORT, () => (console.log(`listening for api requests to ${PORT}`)));
 
 
-
 //////// ** DATABASE LOADERS ** ////////
 ////////////////////////////////////////
 
-function loadPokemon(poke) {
+function insertPokemon(poke) {
+    console.log(poke);
     client.query(
-        'INSERT INTO pokemon(name, dex_number, img_url, type) VALUES($1, $2, $3, $4)',
-        [poke.name, poke.dex_number, poke.img_url, poke.type]
-    )
+        'INSERT INTO pokemon (name, dex_number, img_url, type) VALUES ($1, $2, $3, $4)',
+        [poke.name, poke.dex_number, poke.img_url, poke.type])
         .catch(console.error);
-};
+}
 
 function loadLeaderboard() {
     client.query(`CREATE TABLE IF NOT EXISTS leaderboard (id serial PRIMARY KEY, name VARCHAR(50), score INTEGER);`
