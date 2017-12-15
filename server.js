@@ -37,9 +37,10 @@ app.get('/game/:id', (req, res) => {
                 type: poke.types ? typeSlot() : 'n/a'
             };
             insertPokemon(pokeObj);
+            res.send('done');
         });
 
-    res.send('done');
+    
 });
 
 app.listen(PORT, () => (console.log(`listening for api requests to ${PORT}`)));
