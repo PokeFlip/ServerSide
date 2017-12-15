@@ -40,11 +40,26 @@ app.get('/game/:id', (req, res) => {
             res.send('done');
         });
 
-    
+
 });
 
 app.listen(PORT, () => (console.log(`listening for api requests to ${PORT}`)));
 
+app.get('/pokemon/:type', (req, res) => { // PROBABLY NOT WORKING
+    const type = req.params.type;
+    superagent
+        .get(`${dexUrl}${type}/`)
+        .then((res) => {
+            const pokeReturn = res.body.items.slice(0,5).map( poke => {
+                return {
+                    name: poke.name || 'n/a',
+                    dex_number: poke.id || 'n/a',
+                    img_url: poke.sprites.front_default || 'n/a',
+                    description: poke.flavor_text_entries || 'n/a'
+                };
+            });
+        });
+});
 
 //////// ** DATABASE LOADERS ** ////////
 ////////////////////////////////////////
