@@ -8,7 +8,7 @@ const body = require('body-parser');
 const cors = require('cors');
 const superagent = require('superagent');
 const pokeUrl = "http://pokeapi.co/api/v2/pokemon/";
-// const dexUrl = "https://pokeapi.co/api/v2/pokemon-species/";
+const dexUrl = "https://pokeapi.co/api/v2/pokemon-species/";
 
 const PORT = process.env.PORT;
 console.log(PORT);
@@ -53,26 +53,32 @@ app.get('/pokemon/:type', (req, res) => {
         .catch(console.error);
 });
 
+app.get('/pokemonspecies/:dex', (req, res) => {
+    const dex = req.params.dex;
+    superagent
+        .get(`${dexUrl}${dex}/`)
+        .then((resp) => {
+            const allEntries = resp.body.flavor_text_entries;
+            res.send(findEnglishDexEntry(allEntries)) 
+            });
+});
+
 app.listen(PORT, () => (console.log(`listening for api requests to ${PORT}`)));
 
-// app.get('/pokemon/:type', (req, res) => { // PROBABLY NOT WORKING
-//     const type = req.params.type;
-//     superagent
-//         .get(`${dexUrl}${type}/`)
-//         .then((res) => {
-//             const pokeReturn = res.body.items.slice(0,5).map( poke => {
-//                 return {
-//                     name: poke.name || 'n/a',
-//                     dex_number: poke.id || 'n/a',
-//                     img_url: poke.sprites.front_default || 'n/a',
-//                     description: poke.flavor_text_entries || 'n/a'
-//                 };
-//             });
-//         });
-// });
 
 //////// ** DATABASE LOADERS ** ////////
 ////////////////////////////////////////
+
+function findEnglishDexEntry(allEntries) {
+    let engEntry;
+    for (let i = 0; i < allEntries.length; i++) {
+        if (allEntries[i].language.name == 'en') { //if the name of that entry is english
+            engEntry = allEntries[i].language.flavor_text; //set it and return it
+            break;
+        }
+    }
+    return engEntry;
+}
 
 function insertPokemon(poke) {
     console.log(poke);
