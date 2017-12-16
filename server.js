@@ -59,21 +59,24 @@ app.get('/pokemonspecies/:dex', (req, res) => {
         .get(`${dexUrl}${dex}/`)
         .then((resp) => {
             const allEntries = resp.body.flavor_text_entries;
-            res.send(findEnglishDexEntry(allEntries)) 
-            });
+            res.send(findEnglishDexEntry(allEntries)); //looks for english entry
+        });
 });
+//TODO: create route for posting leaderboard names and scores.
+
+//TODO: create route for querying leaderbord names and scores.
 
 app.listen(PORT, () => (console.log(`listening for api requests to ${PORT}`)));
 
 
-//////// ** DATABASE LOADERS ** ////////
+//////// ** FUNCTIONS ** ////////
 ////////////////////////////////////////
 
 function findEnglishDexEntry(allEntries) {
     let engEntry;
-    for (let i = 0; i < allEntries.length; i++) {
+    for (let i = (allEntries.length - 1); i > 0; i--) {
         if (allEntries[i].language.name == 'en') { //if the name of that entry is english
-            engEntry = allEntries[i].language.flavor_text; //set it and return it
+            engEntry = allEntries[i].flavor_text; //set it and return it
             break;
         }
     }
