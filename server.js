@@ -8,7 +8,7 @@ const body = require('body-parser');
 const cors = require('cors');
 const superagent = require('superagent');
 const pokeUrl = "http://pokeapi.co/api/v2/pokemon/";
-const dexUrl = "https://pokeapi.co/api/v2/pokemon-species/";
+// const dexUrl = "https://pokeapi.co/api/v2/pokemon-species/";
 
 const PORT = process.env.PORT;
 console.log(PORT);
@@ -23,7 +23,7 @@ app.use(body.urlencoded({extended: true}));
 loadLeaderboardTable();
 loadPokemonTable();
 
-app.get('/pokemon/:dex', (req, res) => {
+app.get('/pokemon/dex/:dex', (req, res) => {
     const dex = req.params.dex;
     superagent
         .get(`${pokeUrl}${dex}/`)
@@ -47,7 +47,7 @@ app.get('/pokemon/:dex', (req, res) => {
 app.get('/pokemon/:type', (req, res) => {
     const type = req.params.type;
     client.query(`
-    SELECT * FROM pokemon WHERE type=1$ ORDER BY RANDOM()LIMIT 5`, [type]
+        SELECT * FROM pokemon WHERE type = $1 ORDER BY RANDOM() LIMIT 5`, [type]
     )
         .then(types => res.send(types.rows))
         .catch(console.error);
