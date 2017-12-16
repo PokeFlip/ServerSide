@@ -23,10 +23,10 @@ app.use(body.urlencoded({extended: true}));
 loadLeaderboardTable();
 loadPokemonTable();
 
-app.get('/game/:id', (req, res) => {
-    const id = req.params.id;
+app.get('/pokemon/:dex', (req, res) => {
+    const dex = req.params.dex;
     superagent
-        .get(`${pokeUrl}${id}/`)
+        .get(`${pokeUrl}${dex}/`)
         .then((resp) => {
             const poke = resp.body;
             const typeSlot = () => {
@@ -41,6 +41,15 @@ app.get('/game/:id', (req, res) => {
             insertPokemon(pokeObj);
             res.send('done');
         })
+        .catch(console.error);
+});
+
+app.get('/pokemon/:type', (req, res) => {
+    const type = req.params.type;
+    client.query(`
+    SELECT * FROM pokemon WHERE type=1$ ORDER BY RANDOM()LIMIT 5`, [type]
+    )
+        .then(types => res.send(types.rows))
         .catch(console.error);
 });
 
