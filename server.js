@@ -1,4 +1,5 @@
 // For Richard .env: DATABASE_URL=postgres://postgres:password@localhost:5432/pokeflip
+// For NOT Richard .env: DATABASE_URL=postgres://@localhost:5432/pokeflip
 
 require('dotenv').config();
 const express = require('express');
@@ -76,8 +77,8 @@ app.post('/leaderboard/:name/:score', (req, res) => { // not tested
         .catch(console.error);
 });
 //TODO DONE: Will deliver 404 status message to the user when the requested route does not exist.
-app.get('*', (request, response) => { // not tested
-    response.status('404').send({error:'Not found!'});
+app.get('/*', (req, res) => { // not tested, do we need this?
+    res.status('404').send('Not found!');
 });
 
 
