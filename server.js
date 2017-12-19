@@ -63,20 +63,19 @@ app.get('/pokemonspecies/:dex', (req, res) => {
             res.send(findEnglishDexEntry(allEntries)); //looks for english entry
         });
 });
-//TODO DONE: create route for querying leaderbord names and scores.
+
 app.get('/leaderboard', (req, res) => { // not tested
     client.query('SELECT name, score FROM leaderboard ORDER BY score DESC LIMIT 10')
         .then(data => res.send(data.rows))
         .catch(console.error);
 });
-//TODO DONE: create route for posting leaderboard names and scores.
+
 app.post('/leaderboard/:name/:score', (req, res) => { // not tested
-    console.log(req.body);
     client.query('INSERT INTO leaderboard (name, score) VALUES ($1, $2)', [req.params.name, req.params.score])
         .then(() => res.send('done'))
         .catch(console.error);
 });
-//TODO DONE: Will deliver 404 status message to the user when the requested route does not exist.
+
 app.get('/*', (req, res) => { // not tested, do we need this?
     res.status('404').send('Not found!');
 });
