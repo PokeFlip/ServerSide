@@ -65,7 +65,7 @@ app.get('/pokemonspecies/:dex', (req, res) => {
 });
 //TODO DONE: create route for querying leaderbord names and scores.
 app.get('/leaderboard', (req, res) => { // not tested
-    client.query('SELECT * FROM leaderboard ORDER BY score DESC LIMIT 10')
+    client.query('SELECT name, score FROM leaderboard ORDER BY score DESC LIMIT 10')
         .then(data => res.send(data.rows))
         .catch(console.error);
 });
